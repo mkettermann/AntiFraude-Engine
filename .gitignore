@@ -1,0 +1,96 @@
+## .NET / C# — AntiFraude-Engine
+
+# Build outputs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docview
+*.userprefs
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+orleans.codegen.cs
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+nuget.config
+
+# MSBuild
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+
+# Entity Framework Core migrations (manter as migrações no controle, excluir apenas snapshots temporários)
+# Descomente abaixo se quiser excluir migrações geradas automaticamente
+# **/Migrations/
+
+# Publish output
+**/publish/
+**/PublishProfiles/
+
+# dotnet test
+*.trx
+TestResults/
+coverage*.xml
+coverage*.json
+*.coveragexml
+[Cc]overage/
+
+# Docker (não versionar override com credenciais locais)
+docker-compose.override.yml
+
+# Secrets / credenciais
+*.pfx
+*.p12
+*.key
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+.env
+.env.*
+!.env.example
+
+# Arquivos de sistema
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows shortcuts
+*.lnk
