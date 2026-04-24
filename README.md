@@ -406,3 +406,4 @@ antifraude-engine/
 | [ADR-004](docs/adr/ADR-004.md) | Deployment com Docker Compose e Kubernetes readiness |
 | [Diagrama de Componentes](docs/diagrams/diagram-components.md) | Visão arquitetural dos componentes |
 | [Diagrama de Sequência](docs/diagrams/diagram-sequence.md) | Fluxo completo de uma transação REJECTED |
+| [Diagrama de Comunicação](docs/diagrams/diagram-comunication.md) | Fluxo da Comunicação |

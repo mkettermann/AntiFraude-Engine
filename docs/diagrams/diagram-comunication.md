@@ -1,4 +1,4 @@
-# Arquitetura de comunicação
+# Comunicação
 
 ```mermaid
 flowchart LR
