@@ -29,7 +29,7 @@ C4Component
 
     }
 
-    ContainerDb(postgres, "PostgreSQL :5432", "PostgreSQL 16", "Transactions, AuditLogs, ProcessedMessages, OutboxMessages")
+    ContainerDb(postgres, "PostgreSQL :5552", "PostgreSQL 16", "Transactions, AuditLogs, ProcessedMessages, OutboxMessages")
     ContainerDb(rabbitmq, "RabbitMQ :5672", "RabbitMQ 3.13", "Exchange: antifraude (direct)\nQueue: transaction-submitted\nDLQ: antifraude-dlq")
     System_Ext(score_service, "Score Service (externo)", "Serviço de score de crédito simulado")
 
