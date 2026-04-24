@@ -14,7 +14,6 @@ import { TransactionResponse } from '../../models/transaction.model';
 
 @Component({
 	selector: 'app-submit-transaction',
-	standalone: true,
 	imports: [ReactiveFormsModule, DatePipe, RouterLink, StatusBadgeComponent],
 	templateUrl: './submit-transaction.component.html'
 })

@@ -94,3 +94,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Postgres no Container Docker
+pgdata/
+**/pgdata/
+**/.tmp/

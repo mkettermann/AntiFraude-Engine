@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: antifraude
       POSTGRES_PASSWORD: antifraude123
     ports:
-      - "5552:5552"
+      - "5552:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -52,7 +52,7 @@ services:
     container_name: antifraude-api
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings__Postgres: "Host=postgres;Port=5552;Database=antifraude;Username=antifraude;Password=antifraude123"
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=antifraude;Username=antifraude;Password=antifraude123"
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: guest
       RabbitMQ__Password: guest
@@ -78,7 +78,7 @@ services:
     container_name: antifraude-worker
     environment:
       DOTNET_ENVIRONMENT: Production
-      ConnectionStrings__Postgres: "Host=postgres;Port=5552;Database=antifraude;Username=antifraude;Password=antifraude123"
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=antifraude;Username=antifraude;Password=antifraude123"
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: guest
       RabbitMQ__Password: guest

@@ -1,6 +1,7 @@
 using AntiFraude.Api.Endpoints;
 using AntiFraude.CrossCutting.Extensions;
 using AntiFraude.CrossCutting.Middleware;
+using AntiFraude.Infrastructure.Data;
 using AntiFraude.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -42,6 +43,13 @@ builder.Services
         tags: ["messaging", "ready"]);
 
 var app = builder.Build();
+
+// Garante criação do schema quando o banco sobe vazio (cenário Docker local).
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
 
 // ── Middleware pipeline ────────────────────────────────────────────────────────
 app.UseMiddleware<CorrelationIdMiddleware>();
