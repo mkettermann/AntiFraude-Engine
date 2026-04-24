@@ -17,6 +17,12 @@
         class="px-3 py-1.5 text-sm rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         Consultar
       </a>
+      @if(!isProduction){
+      <a href="http://localhost:5169/swagger/"
+        class="px-3 py-1.5 text-sm rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+        Swagger em Dev
+      </a>
+      }
     </nav>
   </div>
 </header>

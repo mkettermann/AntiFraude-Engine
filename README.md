@@ -24,7 +24,7 @@ Motor de avaliação antifraude para processamento de transações financeiras e
 O AntiFraude Engine é composto por dois processos independentes que se comunicam via mensageria assíncrona:
 
 | Componente | Responsabilidade |
-|---|---|
+| --- | --- |
 | **AntiFraude.Api** | Recebe requisições HTTP, valida idempotência e enfileira transações |
 | **AntiFraude.Worker** | Consome a fila, executa regras de fraude, persiste decisões e registra auditoria |
 
@@ -72,13 +72,17 @@ dotnet ef migrations add NomeDaMigration \
 ### 3. Rodar a solução completa via Docker Compose
 
 ```bash
-docker compose -f infra/docker-compose.yml up --build
+docker compose -f infra/docker-compose.yml down -v
+```
+
+```bash
+docker compose -f infra/docker-compose.yml up --build -d
 ```
 
 Serviços disponíveis:
 
 | URL | Descrição |
-|---|---|
+| --- | --- |
 | `http://localhost:8080/swagger` | Swagger UI da API |
 | `http://localhost:8080/health` | Health check completo (JSON) |
 | `http://localhost:8080/metrics` | Endpoint Prometheus |
@@ -196,7 +200,7 @@ Enfileira uma transação para avaliação antifraude.
 ```
 
 | Status | Descrição |
-|---|---|
+| --- | --- |
 | `202 Accepted` | Transação enfileirada para processamento |
 | `200 OK` | Idempotência — requisição já processada, retorna resposta original |
 | `422 Unprocessable Entity` | Payload inválido ou Idempotency-Key ausente |
@@ -258,7 +262,7 @@ Todos os logs incluem os campos `CorrelationId` e `TransactionId` (via `LogConte
 
 Exemplos de eventos registrados:
 
-```
+```text
 [15:00:00 INF] [corr-abc123] [TXN-2026-001] Transaction TXN-2026-001 RECEIVED — Amount=15000 Currency=BRL
 [15:00:00 INF] [corr-abc123] [TXN-2026-001] Transaction TXN-2026-001 status: RECEIVED → PROCESSING
 [15:00:00 INF] [corr-abc123] [TXN-2026-001] Rule AmountLimitRule evaluated: IsRejected=True Reason=AMOUNT_EXCEEDS_LIMIT in 0ms
@@ -304,7 +308,7 @@ Monitore mensagens na DLQ via RabbitMQ Management UI em `http://localhost:15672`
 `ExternalScoreClient` usa Circuit Breaker do Polly:
 
 | Estado | Condição | Comportamento |
-|---|---|---|
+| --- | --- | --- |
 | **CLOSED** | Normal | Chamadas passam normalmente |
 | **OPEN** | 3 falhas consecutivas | Circuito abre por **30 segundos** |
 | **HALF-OPEN** | Após 30s | 1 chamada teste — fecha se bem-sucedida |
@@ -319,7 +323,7 @@ O sistema garante que a mesma transação não seja processada duas vezes, mesmo
 
 **Fluxo:**
 
-```
+```text
 POST /transactions
   Header: Idempotency-Key: txn-abc-001
   │
@@ -363,7 +367,7 @@ Para adicionar uma nova regra:
 
 ## Estrutura do Repositório
 
-```
+```text
 antifraude-engine/
 ├── src/
 │   ├── AntiFraude.Api/           # ASP.NET Core Minimal API — entrada HTTP
@@ -388,7 +392,7 @@ antifraude-engine/
 ## ADRs e Diagramas
 
 | Documento | Descrição |
-|---|---|
+| --- | --- |
 | [ADR-001](docs/adr/ADR-001.md) | Escolha do RabbitMQ como broker de mensageria |
 | [ADR-002](docs/adr/ADR-002.md) | Escolha do PostgreSQL como banco relacional |
 | [ADR-003](docs/adr/ADR-003.md) | Estratégia de idempotência com Idempotency-Key |

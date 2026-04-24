@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,6 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App { }
+export class App {
+  isProduction = environment.production;
+}
