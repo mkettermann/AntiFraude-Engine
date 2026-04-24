@@ -1,59 +1,103 @@
-# AntiFraudeEngine
+# AntiFraude Engine — Frontend Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+Interface web para consulta e envio de transações ao motor antifraude. Consome a API REST do backend em `http://localhost:8080`.
 
-## Development server
+Gerado com [Angular CLI](https://github.com/angular/angular-cli) versão 21.2.7.
 
-To start a local development server, run:
+---
+
+## Pré-requisitos
+
+- [Node.js](https://nodejs.org/) >= 20.x
+- [npm](https://www.npmjs.com/) >= 10.x (incluído no Node.js)
+- Angular CLI instalado globalmente:
 
 ```bash
+npm install -g @angular/cli
+```
+
+---
+
+## Instalação
+
+Na pasta do projeto Angular, instale as dependências:
+
+```bash
+cd angular/AntiFraudeEngine
+npm install
+```
+
+---
+
+## Como Utilizar
+
+### 1. Subir o backend
+
+Antes de iniciar o frontend, certifique-se de que a API e a infraestrutura estão rodando. Consulte o [README principal](../../README.md) para as instruções completas.
+
+```bash
+# A partir da raiz do repositório
+docker compose -f infra/docker-compose.yml up -d postgres rabbitmq
+
+cd src/AntiFraude.Api
+dotnet run
+```
+
+### 2. Iniciar o servidor de desenvolvimento
+
+```bash
+cd angular/AntiFraudeEngine
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abra o navegador em `http://localhost:4200/`. A aplicação recarrega automaticamente ao salvar qualquer arquivo fonte.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Build de Produção
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Os artefatos são gerados na pasta `dist/`. O build de produção aplica otimizações de desempenho automaticamente.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Testes
+
+### Testes unitários
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+Executa os testes com o [Vitest](https://vitest.dev/).
 
-For end-to-end (e2e) testing, run:
+### Testes end-to-end
 
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+> O Angular CLI não inclui um framework de e2e por padrão. Configure o de sua preferência.
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Geração de Componentes
+
+```bash
+ng generate component nome-do-componente
+```
+
+Para ver todas as opções disponíveis:
+
+```bash
+ng generate --help
+```
+
+---
+
+## Recursos Adicionais
+
+- [Documentação oficial do Angular CLI](https://angular.dev/tools/cli)

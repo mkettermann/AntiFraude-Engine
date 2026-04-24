@@ -7,15 +7,16 @@ Motor de avaliação antifraude para processamento de transações financeiras e
 ## Índice
 
 1. [Visão Geral](#visão-geral)
-2. [Como Rodar Localmente](#como-rodar-localmente)
-3. [Fluxo de Ponta a Ponta](#fluxo-de-ponta-a-ponta)
-4. [Contrato de API](#contrato-de-api)
-5. [Observabilidade](#observabilidade)
-6. [Resiliência](#resiliência)
-7. [Idempotência](#idempotência)
-8. [Injeção de Dependência — IFraudRule como Transient](#injeção-de-dependência--ifraudrule-como-transient)
-9. [Estrutura do Repositório](#estrutura-do-repositório)
-10. [ADRs e Diagramas](#adrs-e-diagramas)
+2. [Frontend Angular](#frontend-angular)
+3. [Como Rodar Localmente](#como-rodar-localmente)
+4. [Fluxo de Ponta a Ponta](#fluxo-de-ponta-a-ponta)
+5. [Contrato de API](#contrato-de-api)
+6. [Observabilidade](#observabilidade)
+7. [Resiliência](#resiliência)
+8. [Idempotência](#idempotência)
+9. [Injeção de Dependência — IFraudRule como Transient](#injeção-de-dependência--ifraudrule-como-transient)
+10. [Estrutura do Repositório](#estrutura-do-repositório)
+11. [ADRs e Diagramas](#adrs-e-diagramas)
 
 ---
 
@@ -29,6 +30,12 @@ O AntiFraude Engine é composto por dois processos independentes que se comunica
 | **AntiFraude.Worker** | Consome a fila, executa regras de fraude, persiste decisões e registra auditoria |
 
 **Stack:** .NET 9 · PostgreSQL · RabbitMQ · MassTransit · Entity Framework Core · Serilog · OpenTelemetry · Polly
+
+---
+
+## Frontend Angular
+
+A interface web é desenvolvida em Angular e consome a API via HTTP. Consulte o [README do Angular](angular/AntiFraudeEngine/README.md) para instruções de instalação e uso.
 
 ---
 

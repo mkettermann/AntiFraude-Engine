@@ -17,6 +17,15 @@ builder.Services.AddOpenTelemetryObservability("AntiFraude.Api");
 // ── Infrastructure (EF Core, repos, MassTransit, rules, use cases) ────────────
 builder.Services.AddInfrastructure(builder.Configuration);
 
+// ── CORS ───────────────────────────────────────────────────────────────────────
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev", policy =>
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 // ── Swagger / OpenAPI ──────────────────────────────────────────────────────────
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -52,6 +61,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ── Middleware pipeline ────────────────────────────────────────────────────────
+app.UseCors("AllowAngularDev");
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseCorrelationIdLogging();
 

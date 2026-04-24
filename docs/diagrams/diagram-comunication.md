@@ -3,6 +3,8 @@
 ```mermaid
 flowchart LR
     UI[Frontend UI] --> API[Backend API]
-    API --> WOR[Worker API]
-    API --> PGF[(PostgreSQL - Faturamento)]
+    API --> RMQ[(RabbitMQ)]
+    API --> PG[(PostgreSQL)]
+    RMQ --> WOR[Worker]
+    WOR --> PG
 ```
