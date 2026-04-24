@@ -53,7 +53,7 @@ C4Component
 ## Legenda
 
 | Componente | Lifetime DI | Descrição |
-|---|---|---|
+| --- | --- | --- |
 | `CorrelationIdMiddleware` | Singleton (middleware) | Enriquece Serilog LogContext com CorrelationId |
 | `AmountLimitRule` | **Transient** | Instância isolada por avaliação; sem estado compartilhado |
 | `FraudEvaluationService` | Scoped | Orquestrador de regras por request/mensagem |
