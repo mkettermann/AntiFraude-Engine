@@ -1,0 +1,112 @@
+<div class="max-w-2xl mx-auto py-10 px-4">
+
+	<!-- Page header -->
+	<div class="mb-8">
+		<a routerLink="/"
+			class="inline-flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-800 transition-colors">
+			<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+			</svg>
+			Voltar
+		</a>
+		<h1 class="text-2xl font-bold text-gray-900 mt-3">Consultar Transação</h1>
+		<p class="text-sm text-gray-500 mt-1">Informe o ID da transação para visualizar o status e o audit trail completo.
+		</p>
+	</div>
+
+	<!-- Search bar -->
+	<div class="flex gap-2">
+		<input [formControl]="searchControl" type="text" (keydown.enter)="search()"
+			class="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-300 transition"
+			placeholder="ex: txn-abc123 ou UUID" />
+		<button (click)="search()" [disabled]="isLoading() || !searchControl.value?.trim()"
+			class="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-300 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors">
+			@if (isLoading()) {
+			<svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+			</svg>
+			} @else {
+			<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round"
+					d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803 7.5 7.5 0 0016.803 15.803z" />
+			</svg>
+			}
+			Buscar
+		</button>
+	</div>
+
+	<!-- Not found / error -->
+	@if (errorMessage()) {
+	<div class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+		{{ errorMessage() }}
+	</div>
+	}
+
+	<!-- Empty state -->
+	@if (searched() && !isLoading() && !transaction() && !errorMessage()) {
+	<div class="mt-10 text-center text-sm text-gray-400">
+		Nenhum resultado encontrado para o ID informado.
+	</div>
+	}
+
+	<!-- Result -->
+	@if (transaction(); as tx) {
+	<div class="mt-6 space-y-4">
+
+		<!-- Summary card -->
+		<div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+			<div class="flex items-start justify-between gap-4">
+				<div class="min-w-0">
+					<p class="text-xs text-gray-500 uppercase tracking-wide">Transaction ID</p>
+					<p class="font-mono text-base text-gray-900 mt-0.5 break-all">{{ tx.transactionId }}</p>
+				</div>
+				<app-status-badge [status]="tx.status" />
+			</div>
+
+			<dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-4 text-sm border-t border-gray-100 pt-4">
+				<div>
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Criado em</dt>
+					<dd class="text-gray-900 mt-0.5">{{ tx.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}</dd>
+				</div>
+				@if (tx.processedAt) {
+				<div>
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Processado em</dt>
+					<dd class="text-gray-900 mt-0.5">{{ tx.processedAt | date: 'dd/MM/yyyy HH:mm:ss' }}</dd>
+				</div>
+				}
+				@if (tx.decision) {
+				<div>
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Decisão</dt>
+					<dd class="font-semibold text-gray-900 mt-0.5">{{ tx.decision }}</dd>
+				</div>
+				}
+				@if (tx.reason) {
+				<div class="col-span-2">
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Motivo</dt>
+					<dd class="text-gray-700 mt-0.5">{{ tx.reason }}</dd>
+				</div>
+				}
+			</dl>
+		</div>
+
+		<!-- Audit trail card -->
+		@if (tx.auditTrail.length) {
+		<div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+			<h3 class="text-sm font-semibold text-gray-900 mb-5">
+				Audit Trail
+				<span class="ml-2 text-xs font-normal text-gray-400">({{ tx.auditTrail.length }} evento{{ tx.auditTrail.length >
+					1 ? 's' : '' }})</span>
+			</h3>
+			<app-audit-trail [entries]="tx.auditTrail" />
+		</div>
+		} @else {
+		<div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+			<p class="text-sm text-gray-400 italic">Nenhum evento de audit trail registrado ainda.</p>
+		</div>
+		}
+
+	</div>
+	}
+
+</div>

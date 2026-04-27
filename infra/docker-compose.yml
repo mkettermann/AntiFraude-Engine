@@ -1,0 +1,97 @@
+services:
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # PostgreSQL
+  # ──────────────────────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: antifraude-postgres
+    environment:
+      POSTGRES_DB: antifraude
+      POSTGRES_USER: antifraude
+      POSTGRES_PASSWORD: antifraude123
+    ports:
+      - "5552:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U antifraude -d antifraude"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # RabbitMQ com Management UI (:15672)
+  # ──────────────────────────────────────────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: antifraude-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # AntiFraude.Api
+  # ──────────────────────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: ..
+      dockerfile: src/AntiFraude.Api/Dockerfile
+    container_name: antifraude-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=antifraude;Username=antifraude;Password=antifraude123"
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
+      RabbitMQ__Uri: "amqp://guest:guest@rabbitmq:5672"
+      ExternalServices__ScoreServiceUrl: "http://score-service:8080"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # AntiFraude.Worker
+  # ──────────────────────────────────────────────────────────────────────────────
+  worker:
+    build:
+      context: ..
+      dockerfile: src/AntiFraude.Worker/Dockerfile
+    container_name: antifraude-worker
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=antifraude;Username=antifraude;Password=antifraude123"
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
+      RabbitMQ__Uri: "amqp://guest:guest@rabbitmq:5672"
+      ExternalServices__ScoreServiceUrl: "http://score-service:8080"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  rabbitmq_data:

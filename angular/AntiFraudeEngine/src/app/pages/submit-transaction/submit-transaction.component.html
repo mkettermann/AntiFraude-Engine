@@ -1,0 +1,236 @@
+<div class="max-w-2xl mx-auto py-10 px-4">
+
+	<!-- Page header -->
+	<div class="mb-8">
+		<a routerLink="/"
+			class="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:text-indigo-800 transition-colors">
+			<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+			</svg>
+			Voltar
+		</a>
+		<h1 class="text-2xl font-bold text-gray-900 mt-3">Submeter Transação</h1>
+		<p class="text-sm text-gray-500 mt-1">Preencha os campos abaixo para enviar uma transação para análise antifraude.
+		</p>
+	</div>
+
+	<!-- Form -->
+	<form [formGroup]="form" (ngSubmit)="submit()"
+		class="bg-white rounded-2xl border border-gray-200 shadow-sm divide-y divide-gray-100">
+
+		<!-- Idempotency Key -->
+		<div class="px-6 py-5">
+			<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+				Idempotency-Key <span class="text-gray-400 font-normal normal-case tracking-normal">(header automático)</span>
+			</label>
+			<div class="flex items-center gap-2">
+				<code
+					class="flex-1 block bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono text-gray-600 truncate">
+          {{ idempotencyKey() }}
+        </code>
+				<button type="button" (click)="regenerateIds()"
+					class="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 hover:text-indigo-800 border border-indigo-200 rounded-lg px-3 py-2 hover:bg-indigo-50 transition-colors">
+					<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round"
+							d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+					</svg>
+					Gerar novos
+				</button>
+			</div>
+		</div>
+
+		<!-- Transaction ID -->
+		<div class="px-6 py-5">
+			<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+				ID da Transação <span class="text-red-400">*</span>
+			</label>
+			<input formControlName="transactionId" type="text"
+				class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition"
+				placeholder="UUID da transação" />
+		</div>
+
+		<!-- Amount + Currency -->
+		<div class="px-6 py-5 grid grid-cols-3 gap-4">
+			<div class="col-span-2">
+				<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+					Valor <span class="text-red-400">*</span>
+				</label>
+				<div class="relative">
+					<span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">R$</span>
+					<input formControlName="amount" type="number" step="0.01" min="0.01"
+						class="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition"
+						placeholder="0,00" />
+				</div>
+				@if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+				<p class="text-xs text-red-500 mt-1">Informe um valor maior que zero.</p>
+				}
+			</div>
+			<div>
+				<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+					Moeda <span class="text-red-400">*</span>
+				</label>
+				<select formControlName="currency"
+					class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300 transition">
+					<option value="BRL">BRL</option>
+					<option value="USD">USD</option>
+					<option value="EUR">EUR</option>
+				</select>
+			</div>
+		</div>
+
+		<!-- Merchant + Customer IDs -->
+		<div class="px-6 py-5 grid grid-cols-2 gap-4">
+			<div>
+				<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+					Merchant ID <span class="text-red-400">*</span>
+				</label>
+				<input formControlName="merchantId" type="text"
+					class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition"
+					placeholder="ex: merchant-001" />
+				@if (form.get('merchantId')?.invalid && form.get('merchantId')?.touched) {
+				<p class="text-xs text-red-500 mt-1">Campo obrigatório.</p>
+				}
+			</div>
+			<div>
+				<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+					Customer ID <span class="text-red-400">*</span>
+				</label>
+				<input formControlName="customerId" type="text"
+					class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition"
+					placeholder="ex: customer-001" />
+				@if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
+				<p class="text-xs text-red-500 mt-1">Campo obrigatório.</p>
+				}
+			</div>
+		</div>
+
+		<!-- Metadata -->
+		<div class="px-6 py-5">
+			<div class="flex items-center justify-between mb-3">
+				<label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">
+					Metadata <span class="text-gray-400 font-normal normal-case tracking-normal">(opcional)</span>
+				</label>
+				<button type="button" (click)="addMetadata()"
+					class="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+					<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+					</svg>
+					Adicionar par
+				</button>
+			</div>
+			<div formArrayName="metadata" class="space-y-2">
+				@for (item of metadataArray.controls; track $index) {
+				<div [formGroupName]="$index" class="flex gap-2">
+					<input formControlName="key" type="text" placeholder="Chave"
+						class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition" />
+					<input formControlName="value" type="text" placeholder="Valor"
+						class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition" />
+					<button type="button" (click)="removeMetadata($index)"
+						class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+						<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
+				}
+				@if (metadataArray.length === 0) {
+				<p class="text-xs text-gray-400 italic">Nenhum par adicionado.</p>
+				}
+			</div>
+		</div>
+
+		<!-- Submit button -->
+		<div class="px-6 py-5">
+			<button type="submit" [disabled]="isLoading()"
+				class="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
+				@if (isLoading()) {
+				<svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+				</svg>
+				Enviando...
+				} @else {
+				Submeter Transação
+				}
+			</button>
+		</div>
+
+	</form>
+
+	<!-- Validation errors (422) -->
+	@if (validationErrors().length) {
+	<div class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4">
+		<p class="text-sm font-semibold text-red-700 mb-2">Erros de validação:</p>
+		<ul class="list-disc pl-4 space-y-1">
+			@for (err of validationErrors(); track err) {
+			<li class="text-sm text-red-600">{{ err }}</li>
+			}
+		</ul>
+	</div>
+	}
+
+	<!-- Generic error -->
+	@if (errorMessage()) {
+	<div class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+		{{ errorMessage() }}
+	</div>
+	}
+
+	<!-- Success result -->
+	@if (result(); as tx) {
+	<div class="mt-6 rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+		<div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+			<h2 class="font-semibold text-gray-900">Transação recebida</h2>
+			@if (isIdempotentReplay()) {
+			<span class="text-xs bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full font-semibold">
+				Replay idempotente (200 OK)
+			</span>
+			} @else {
+			<span class="text-xs bg-green-100 text-green-700 px-2.5 py-0.5 rounded-full font-semibold">
+				202 Accepted
+			</span>
+			}
+		</div>
+		<div class="p-6">
+			<dl class="grid grid-cols-2 gap-x-4 gap-y-5 text-sm">
+				<div class="col-span-2">
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Transaction ID</dt>
+					<dd class="font-mono text-gray-900 mt-0.5 break-all">{{ tx.transactionId }}</dd>
+				</div>
+				<div>
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Status</dt>
+					<dd class="mt-1">
+						<app-status-badge [status]="tx.status" />
+					</dd>
+				</div>
+				<div>
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Criado em</dt>
+					<dd class="text-gray-900 mt-0.5">{{ tx.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}</dd>
+				</div>
+				@if (tx.decision) {
+				<div>
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Decisão</dt>
+					<dd class="font-semibold text-gray-900 mt-0.5">{{ tx.decision }}</dd>
+				</div>
+				}
+				@if (tx.reason) {
+				<div class="col-span-2">
+					<dt class="text-xs text-gray-500 uppercase tracking-wide">Motivo</dt>
+					<dd class="text-gray-700 mt-0.5">{{ tx.reason }}</dd>
+				</div>
+				}
+			</dl>
+			<div class="mt-5 pt-4 border-t border-gray-100">
+				<a [routerLink]="['/query']" [queryParams]="{ id: tx.transactionId }"
+					class="text-sm text-indigo-600 hover:text-indigo-800 font-medium inline-flex items-center gap-1">
+					Consultar status da transação
+					<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+					</svg>
+				</a>
+			</div>
+		</div>
+	</div>
+	}
+
+</div>
