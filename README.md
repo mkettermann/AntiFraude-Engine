@@ -391,6 +391,7 @@ antifraude-engine/
 │   └── diagrams/                 # Diagramas Mermaid
 ├── infra/
 │   └── docker-compose.yml
+├── angular/AntiFraudeEngine      # Frontend Angular para disparar as actions da Api.
 └── README.md
 ```
 
